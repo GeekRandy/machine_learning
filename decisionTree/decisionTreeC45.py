@@ -3,15 +3,16 @@
 
 import math
 import argparse
-import pygraphviz as pyg
+# import pygraphviz as pyg
 import numpy as np
 
 """
-    1、计算类别信息熵
+    1、计算类别信息熵(信息熵越大，不确定性越大，表示集合的纯度越小)
     2、计算每个属性的信息熵（即条件熵）
-    3、计算信息增益
+    3、计算信息增益（信息增益越大，集合的纯度越大）信息增益准则对于可取数值数目较多的属性有所偏好
     4、计算属性分裂信息度量
-    5、计算信息增益率（信息增益 / 属性分裂信息度量）
+    5、计算信息增益率（信息增益 / 属性分裂信息度量） C4.5算法并不是直接选择增益率最大的候选划分属性：而是
+    先从候选划分属性中找出信息增益高于平均水平的属性，再从中选择增益率最高的。
     ---选择分类属性节点：类别是纯的，定义为叶子节点；类别不纯，选择子节点重复1~5的过程
 """
 
@@ -44,6 +45,7 @@ class Tree:
     
     def build(self, root):
         child = self.split(root)
+        print "child: ", child
         root.child = child
         if len(child) != 0:
             for i in child:
@@ -63,6 +65,7 @@ class Tree:
         for attr in node.attribute:
             # 对于每一个属性，计算其属性信息熵
             t = self.entropy(node.sample)
+            # 信息熵为0直接返回
             if t == 0:
                 return res
             d = self.classify(node.sample, attr)
@@ -74,6 +77,10 @@ class Tree:
                 gain_max_dict = d
         used_attr = node.attribute[:]
         used_attr.remove(gain_max_attr)
+        
+        print "gain_max_attr: ", gain_max_attr
+        print "used_attr: ", used_attr
+        print "gain_max_dict: ", gain_max_dict
         for (k, v) in gain_max_dict.items():
             res.append(Node(v, used_attr, gain_max_attr, k))
         return res
@@ -131,23 +138,23 @@ class Tree:
         return (c_e, c_info_measure)
 
 
-    def save(self, filename):
-        g = pyg.AGraph(strict=False, directed=True)
-        g.add_node(self.root.value)
-        self._save(g, self.root)
-        g.layout(prog='dot')
-        g.draw(filename)
-        print("The file is save to %s." % filename)
-    
-    def _save(self, graph, root):
-        if root.child:
-            for node in root.child:
-                graph.add_node(node.value)
-                graph.add_edge(root.value, node.value)
-                self._save(graph, node)
-        else:
-            graph.add_node(self.matrix[root.sample[0]], label=self.matrix[root.sample[0]][self.col - 1], shape="box")
-            graph.add_edge(root.value, self.matrix[root.sample[0]])
+    # def save(self, filename):
+    #     g = pyg.AGraph(strict=False, directed=True)
+    #     g.add_node(self.root.value)
+    #     self._save(g, self.root)
+    #     g.layout(prog='dot')
+    #     g.draw(filename)
+    #     print("The file is save to %s." % filename)
+    #
+    # def _save(self, graph, root):
+    #     if root.child:
+    #         for node in root.child:
+    #             graph.add_node(node.value)
+    #             graph.add_edge(root.value, node.value)
+    #             self._save(graph, node)
+    #     else:
+    #         graph.add_node(self.matrix[root.sample[0]], label=self.matrix[root.sample[0]][self.col - 1], shape="box")
+    #         graph.add_edge(root.value, self.matrix[root.sample[0]])
 
 
 
@@ -160,7 +167,7 @@ if __name__ == '__main__':
     for line in lines:
         print line
         matrix.append(line.split())
-    print matrix[0]
+    print "matrix: ", matrix[0]
     C45Tree = Tree(matrix)
-    C45Tree.save("data.png")
+    # C45Tree.save("data.png")
 
