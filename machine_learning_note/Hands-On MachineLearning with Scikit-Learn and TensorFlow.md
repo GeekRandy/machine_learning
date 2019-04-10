@@ -13,18 +13,20 @@ http://speech.ee.ntu.edu.tw/~tlkagk/courses_ML19.html
 
 * 机器的错觉（Adversarial Attrack）
     * 如何避免？
-    * 测试资料和训练资料分布不一样的时候该如何处理？![-w512](media/15531850116834/15531863295519.jpg)
+    * 测试资料和训练资料分布不一样的时候该如何处理？
+    * ![](/Users/randy/机器学习算法/machine_learning/source/png_1.jpg)
     * Unsupervised Domain Adaptation 
-    *    ![-w538](media/15531850116834/15531865166794.jpg)
-
+    * ![](/Users/randy/机器学习算法/machine_learning/source/png_2.jpg)
 *  异常检测Anomaly Detection
-    *  检测输入数据跟训练数据集是否相似![-w912](media/15531850116834/15531870167624.jpg)
+    *  检测输入数据跟训练数据集是否相似
+    *  ![](/Users/randy/机器学习算法/machine_learning/source/png_3.jpg)
     * 应用：诈骗检测、网络入侵检测、癌症检测等
         * https://www.kaggle.com/ntnu-testimon/paysim1/home
         * http://kdd.ics.uci.edu/databases/kddcup99/kddcup99.html
         * https://www.kaggle.com/uciml/breast-cancer-wisconsin-data/home
    * 检测任务是否属于辛普森家族成员：https://www.kaggle.com/alexattia/the-simpsons-characters-dataset/
-       * 如何预估置信区？![-w922](media/15531850116834/15531880365358.jpg)
+       * 如何预估置信区？
+       * ![](/Users/randy/机器学习算法/machine_learning/source/png_4.jpg)
         * 你会发现检测数值分布比较均匀，如果都达不到阈值，那么则很大程度表示该任务不属于；如果分布不均匀，最大的值大于阈值，那么就属于该预测值【这里面涉及期望、方差、熵】
         * 论文：TerranceDeVries, Graham W. Taylor, Learning Confidence for Out-of-Distribution Detection in Neural Networks, arXiv, 2018
         * Training Set、Dev Set、Testing Set
@@ -45,7 +47,8 @@ http://speech.ee.ntu.edu.tw/~tlkagk/courses_ML19.html
      * 算法导论中经典的排序问题，无论是快排还是归并排序，解法都是一些确定的规则；而对于机器学习问题，比如垃圾邮件识别、识别一张图片上的物体是不是树叶等，这些就很难用一个确定的规则来解决，前者是由于很难穷举，而后者则是由于很难去描述树叶的规则。
      * 由前面的历史浏览数据来训练模型的实例可以看出历史数据中隐藏着用户是否会点击某个商品的某种规律。所以机器学习应用的一个必要条件就是：有大量数据，并且数据中有隐藏的某种规律或模式
 * 由此得知机器学习的三要素就是：**数据+学习算法+模型（映射）**
-    * 接下来将借助于PLA算法的实例来具体说明机器学习的应用：![](media/15531850116834/15540006457596.jpg)
+    * 接下来将借助于PLA算法的实例来具体说明机器学习的应用：
+    * ![](/Users/randy/机器学习算法/machine_learning/source/png_5.jpg)
     * 上图展示的是一份样本数据，该训练数据的每一行称为一个训练样本；注意到每个样本包含三个属性：年龄、性别和商品价格。代表了我们认为用户是否会点击该商品取决于这三个因素，但实际上影响用户点击的因素远不止这三个因素，这里是简化处理。这些属性我们统一称之为特征（feature）。在该场景中，我们还需要对用户是否点击商品进行预判，这个预判结果也需要记入这个模型系统之中，因此是否点击这个信息被记做标注（label）。
     * 上述这份训练数据是从哪里来的？绝大多数互联网产品都会把用户的行为数据——包括浏览历史、点击历史记录下来，我们称为日志（Log）。从日志数据中就能知道每个用户点过什么商品（对应标注为1的样本），看了什么商品却没有点（对应标注为-1的样本），再关联上用户的特征数据（年龄、性别）和商品的特征数据（价格），就得到学习算法所需要的训练数据了。
 
@@ -71,7 +74,7 @@ http://speech.ee.ntu.edu.tw/~tlkagk/courses_ML19.html
         * 不妨假设存在这样一个完美的映射$f$，它不仅能够对训练数据中的所有样本都能够正确的预测用户是否点击，对于遇到的新的样本也是一样的。但是现实中并不存在这样的完美模型（Ground Truth），也称之为目标模型，也即这个完美模型（函数）是未知的。既然不存在，那我们如何以它为目标来学习呢？这时我们就只能依赖训练数据，当训练数据足够多的时候，我们就可以认为海量的样本反映了Ground Truth f的样子，我们就称这种情况为训练数据来自于f。
         * 假设了Ground Truth f的存在，那么学习算法要做的就是找出某个映射，使得这个映射尽可能的接近f。在实际训练过程中，学习算法会有一个假设集合(Hypothesis Set，记作H)，这个集合包含所有候选的映射函数。学习算法做的事情就是从中选出最好的g，使得g越接近f越好。
         * 接下来采用一个示例来说明假设函数的情况：
-            * ![](media/15531850116834/15540024970389.jpg)
+            * ![](/Users/randy/机器学习算法/machine_learning/source/png_6.jpg)
             * 银行核定是否要发放信用卡给客户，那可能的假设函数（判定函数）就是上图中的三个：1、年收入是否超过80万台币； 2、负债超过10万台币； 3、工作不满两年；我们要做的就是从这三个假设函数中筛选一个最好的最为$g$。
   * 接下来继续最开始的实例，我们将引入一个PLA的算法，全称 Perceptron Learning Algorithm。其中 Perceptron 译作感知机，它是人工神经网络中最基础的两层神经网络模型。
       * 经典的PLA算法问题存在着两点性质：1、算法可能永远也无法运行结束，会迷失在茫茫的训练数据中永远找不到出口；2、哪怕知道PLA最终能找到出口，我们也无法事先知道学习需要花多久；但是对于上述两个问题可以通过算法的升级版加以解决
@@ -79,7 +82,7 @@ http://speech.ee.ntu.edu.tw/~tlkagk/courses_ML19.html
             * 每个特征都有一个权重$W_i$表示该特征的重要程度，综合所有的特征和权重计算一个最终的分数，如果分数超过某个阈值（threshold），就表示用户会点击，否则不会点击。
 
       * 我们进一步简化训练数据，将特征缩减为两个：年龄和商品价格
-      * ![](https://raw.githubusercontent.com/CoolRandy/machine_learning/master/resource/%E7%94%A8%E6%88%B7%E6%97%A5%E5%BF%97%E8%AE%AD%E7%BB%83%E6%95%B0%E6%8D%AE.jpg)
+      * ![](/Users/randy/机器学习算法/machine_learning/source/png_7.jpg)
       * 如上图所示，每一条样本表示为$x=(x_1, x_2)$,其中$x_1$表示年龄，$x_2$表示商品价格。样本标注用$y$表示，$y=1$表示用户点击，$y=-1$表示用户没有点击。我们将特征的权重记作$w = (w_1, w_2)$，$w_1$代表了年龄这维特征的重要性，$w_2$代表商品价格这维特征的重要性。于是判断一个用户会不会点击，就变成了下面这个函数：
       * $$y = \left\{\begin{matrix}
  1,& if \sum_{i=1}^{n}w_{i}x_{i}>threshold \\ 
@@ -91,7 +94,7 @@ http://speech.ee.ntu.edu.tw/~tlkagk/courses_ML19.html
       * 具体到上面的实例，$x={x_1, x_2}$只有两维特征，代入$h(x)$中进行简化：
       * $$h(x) = sign({ w_{1}}x_{1}+{ w_{2}}x_{2}-{ threshold})$$
       * 接着把所有的训练样本x1和x2绘制到二维平面上（根据方程$w_1x_1+w_2x_2-threshold=0$来绘制）：
-      * ![](https://raw.githubusercontent.com/CoolRandy/machine_learning/master/resource/%E4%BA%8C%E7%BB%B4%E5%9B%BE%E5%83%8F.jpg)
+      * ![](/Users/randy/机器学习算法/machine_learning/source/png_8.jpg)
       * 可以看到是一条直线，左边的点$w_1x_1+w_2x_2-threshold<0$，右边的点$w_1x_1+w_2x_2-threshold>0$，可以推出：PLA假设集合中任意一个确定的$h(x)$，都可视作一条直线将平面分隔成了两个区域。线的左边有$h(x)=-1$，右边有$h(x)=1$。
       * 至此学习算法希望选中的模型就是上述的直线$g$，正好将训练数据划分为两个区域；可以知道该预测函数就是一个线性分类器。事实上你会发现这样的直线存在很多条，那究竟如何选择一条最优的直线呢？也即确定最优的$W_i$和$threshold$的解。
       * $$h(x) = sign(\sum_{i=1}^{n}({ w_{i}}x_{i})-{\color{Red}{threshold}})
@@ -103,7 +106,8 @@ http://speech.ee.ntu.edu.tw/~tlkagk/courses_ML19.html
             3. 如果有任意一个样本没有被切分正确，即存在任意$(x', y')$，使得$sign(w^T x') != y'$，此时我们对w代表的线做一点点修正，另$W_t+1 = w_t + y'x$
             4. 跳转到Step 2
 
-        * 该算法的核心就是步骤三中的修正原理：![](media/15531850116834/15540044056471.jpg)
+        * 该算法的核心就是步骤三中的修正原理：
+        * ![](/Users/randy/机器学习算法/machine_learning/source/png_9.jpg)
         * 修正原理解释：以右上角的图形向量表示为例，$w$和$x$向量的夹角大于90度， 也就是说这两个向量的内积是负的，$sign(wx)$的结果就是-1，而我们需要的$y$则是+1，所以我们需要去修正这个内积的结果，使得它的符号是正的。只需要修正向量$w$的取值，保证新的$w$向量和$x$向量的夹角是小于90度的，这样我们对这个点的划分就是正确的。如上图所示我们将$w$更新为$w+yx$，这样根据四边形法则求内积结果符号就是正的。那这个更新公式是怎么来的呢？$y = +1$，$w+xy=w+x$ 刚好将向量的夹角变小了，当然根据实际情况还可以添加系数$t$，令$w=w+t* xy$。注：两个向量的夹角大于90度，则向量内积就是负的，小于90度，向量内积是正的，可以直观的从图形上看出来。
         * 
 ```>>> sign = lambda x:1 if x > 0 else -1 if x < 0 else -1
