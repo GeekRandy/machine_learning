@@ -8,7 +8,7 @@
 """
 import math
 import argparse
-import pygraphviz as pyg
+# import pygraphviz as pyg
 import numpy as np
 
 class Node:
@@ -34,19 +34,19 @@ class DecisionTree:
   def __init__(self, data):
     self.matrix = data
     self.row = len(data)
-    print 'row: ', self.row
+    print ('row: ', self.row)
     self.col = len(data[0])
-    print 'col: ', self.col
-    print list(range(self.row))
-    print list(range(self.col - 1))
+    print ('col: ', self.col)
+    print (list(range(self.row)))
+    print (list(range(self.col - 1)))
     self.root = Node(list(range(self.row)), list(range(self.col - 1)), self.col, 'root')
     self.build(self.root)
     
   def build(self, root):
     child = self.splitByCart(root)
-    print "child: ", child
+    print ("child: ", child)
     for node in child:
-        print "node.sample===", node.sample
+        print ("node.sample===", node.sample)
 
     root.child = child
     if len(child) != 0:
@@ -59,14 +59,14 @@ class DecisionTree:
     labelCount = {}
     for i in range(num):
       currentLabel = self.matrix[i][-1]
-      print currentLabel
+      print (currentLabel)
       labelCount[currentLabel] = labelCount.get(currentLabel, 0) + 1
-    print "labelCount: ", labelCount
+    print ("labelCount: ", labelCount)
     GINI = 1.0
     for key in labelCount:
       prob = float(labelCount[key]) / num
       GINI -= prob ** 2
-    print "全数据集Gini系数: ", GINI
+    print ("全数据集Gini系数: ", GINI)
     return GINI
 
   def splitByCart(self, node):
@@ -86,45 +86,46 @@ class DecisionTree:
         return res
     feature = node.attribute
     rowNum = node.sample
-    print "feature count: ", feature
+    print ("feature count: ", feature)
     baseGini = self._caclGini(node)
-    print "baseGini: ", baseGini
+    print ("baseGini: ", baseGini)
     bestGini = 0.0
     bestFeatureIndex = -1
 
     # 遍历特征
     for f in feature:
-        print "node sample: ", node.sample
-        print "feature: ", f
+        print ("node sample: ", node.sample)
+        print ("feature: ", f)
         d = self.classify(node.sample, f)
-        print "特征字典的长度: ", len(d)
+        print ("特征字典的长度: ", len(d))
         # for i in range(len(d)):
         g = self._caclSubGini(d)
-        print "max gini: ", g
+        print ("max gini: ", g)
         # 为何要用全数据集基尼指数减去每个feature的基尼指数
         infoGini = baseGini - g
-        print "infoGini: ", infoGini
+        print ("infoGini: ", infoGini)
         if infoGini > bestGini:
             bestGini = infoGini
             bestFeatureIndex = f
             gain_max_dict = d
-    print "best gini: ", bestGini
+    print ("best gini: ", bestGini)
     used_attr = node.attribute[:]
-    print "bestFeatureIndex: ", bestFeatureIndex
-    used_attr.remove(bestFeatureIndex) 
-
-    print "gain_max_dict: ", gain_max_dict
-    print "used_attr: ", used_attr
+    print ("bestFeatureIndex: ", bestFeatureIndex)
+    if bestFeatureIndex != -1:
+      used_attr.remove(bestFeatureIndex) 
+    
+    print ("gain_max_dict: ", gain_max_dict)
+    print ("used_attr: ", used_attr)
     for (k, v) in gain_max_dict.items():
-        print "v is: ", v['count']
+        print ("v is: ", v['count'])
         res.append(Node(v['count'], used_attr, bestFeatureIndex, k))
     return res
 
   # 处理数据【获取特定feature的数据】   
   def classify(self, select_row, column):
     res = {}
-    print 'column: ', column
-    print 'select row: ', select_row
+    print ('column: ', column)
+    print ('select row: ', select_row)
     labelCount = {}
     subLabel = {}
     for index in select_row:
@@ -132,18 +133,18 @@ class DecisionTree:
         key = self.matrix[index][column]
         # 第index行、最后一列
         label = self.matrix[index][-1]
-        print 'classify key: ', key
-        print 'classify label: ', label
+        print ('classify key: ', key)
+        print ('classify label: ', label)
         if key in res:
             res[key].append(index)
         else:
             res[key] = [index]
-    print "===res===", res
+    print ("===res===", res)
 
     arr = []
     for key,values in res.items():
         arr.append(values)
-    print "arr: ", arr
+    print ("arr: ", arr)
     index = 0
     for key,values in res.items():
         subLabelCount = {}
@@ -151,17 +152,17 @@ class DecisionTree:
         for i in range(len(values)):
             currLabel = self.matrix[values[i]][-1]
             subLabelCount[currLabel] = subLabelCount.get(currLabel, 0) + 1
-        print "sub label count: ", len(subLabelCount)
+        print ("sub label count: ", len(subLabelCount))
         counts = 0
         for k,v in subLabelCount.items():
             counts = counts + v
-        print "counts: ", counts
+        print ("counts: ", counts)
         subLabelCount['cnt'] = counts
         subLabelCount['count'] = arr[index]
         res[key] = subLabelCount
         index = index + 1
     
-    print 'res: ', res
+    print ('res: ', res)
     return res
   
 
@@ -171,24 +172,24 @@ class DecisionTree:
     maxGini = 0.0
     for key,values in res.items():
         p = float(res[key]['cnt']) / parentRow
-        print "p is: ", p
+        print ("p is: ", p)
         feaLen = len(res[key])
-        print "feature len: ", feaLen
-        print "values: ", values
+        print ("feature len: ", feaLen)
+        print ("values: ", values)
         length = 0
         for key,results in values.items():
             if key != 'cnt' and key != 'count':
-                print "results: ", results
+                print ("results: ", results)
                 length += results
-        print "length: ", length
+        print ("length: ", length)
         GINI = 1.0
         for k in values:
             if k != 'cnt' and k != 'count':
                 prob = float(values[k]) / length
-                print "prob== ", prob
+                print ("prob== ", prob)
                 GINI -= prob ** 2
         
-        print "GINI IS: ", GINI
+        print ("GINI IS: ", GINI)
         maxGini += p * GINI
     # print "max gini: ", maxGini
     return maxGini
@@ -219,9 +220,9 @@ if __name__ == '__main__':
   matrix = []
   lines = args.data.readlines()
   for line in lines:
-      print line
+      print (line)
       matrix.append(line.split())
-  print "matrix: ", matrix[0]
+  print ("matrix: ", matrix[0])
   CARTTree = DecisionTree(matrix)
 #   CARTTree._caclGini(14, matrix)
 #   CARTTree.splitByCart(matrix)
